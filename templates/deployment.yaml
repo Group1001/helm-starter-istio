@@ -64,7 +64,11 @@ spec:
                 name: {{ .name }}
           {{- end -}}
           {{- end }}
+      {{- if or (.Values.configMap.enabled) (.Values.secretWhatever.enabled) }}
       volumes:
+        {{- if .Values.configMap.enabled }}
         - name: {{ (print .Values.service "-config") | quote }}
           configMap:
             name: {{ .Values.service | quote }}
+        {{- end }}
+        {{- end }}

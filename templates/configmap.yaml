@@ -1,3 +1,5 @@
+{{- if .Values.configMap.enabled }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +12,19 @@ metadata:
 data:
   {{ .Values.configMap.fileName | default "config.yaml" }}: |-
 {{ toYaml .Values.configMap.content | indent 4 }}
+{{- end }} 
+{{- range .Values.env.configMapRef }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name | quote }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.service | quote }}
+    app.kubernetes.io/part-of: {{ .Values.system | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  {{ .fileName | default "config.yaml" }}: |-
+{{ toYaml .content | indent 4 }}
+{{- end }}

@@ -23,9 +23,6 @@ replicaCount: 3
 # Ports must be named <protocol>[-<suffix>] to work with Istio.
 # Valid protocols are grpc, http, http2, https, mongo, mysql, redis, tcp, tls, udp
 ports:
-  - name: grpc-svc
-    port: 8443
-    targetPort: 8443
   - name: http-status
     port: 8080
     targetPort: 8080
@@ -34,7 +31,7 @@ ports:
 # host name to this service on the ports and protocols defined in the 'ports' section 
 # above. 
 ingressGateway:
-  enabled: false
+  enabled: true
 # name: default/my-gateway
 # host: my.gateway.com
 # matchPrefix: 
@@ -42,6 +39,7 @@ ingressGateway:
 #   - "/bar"
 
 configMap:
+  enabled: false
   # Where the config map should be mounted inside your container's filesystem.
   mountPath: /config/<CHARTNAME>-config
   fileName: config.yaml
@@ -58,7 +56,8 @@ env:
     - name: DD_PROFILING_ENABLED
       value: "true"
     - name: DD_TAGS
-      value: ""
+      value: |-
+        app:{{ $.Values.service }},env:{{ $.Release.Namespace }},part-of:{{ .Values.system }}
     - name: DD_TRACE_ANALYTICS_ENABLED
       value: "true"
     - name: DD_TRACE_ENABLED
@@ -66,8 +65,8 @@ env:
   downwardApi: 
     - name: DD_AGENT_HOST
       fieldPath: status.hostIP
-  configMapRef: []
-  secretRef: []
+  configMapRef: [] # list of name/fileName/content tuples
+  secretRef: []    # list of name/content pairs
 
 # Probe settings (use Kubernetes syntax)
 probes:
