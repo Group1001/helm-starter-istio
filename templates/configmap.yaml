@@ -13,6 +13,7 @@ data:
   {{ .Values.configMap.fileName | default "config.yaml" }}: |-
 {{ toYaml .Values.configMap.content | indent 4 }}
 {{- end }} 
+
 {{- range .Values.env.configMapRef }}
 ---
 apiVersion: v1
