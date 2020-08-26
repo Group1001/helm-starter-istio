@@ -51,11 +51,23 @@ configMap:
     key2: value2
 
 env:
-  inline: {}
-  downwardApi:
+  inline: 
+    - name: DD_ENV
+      value: |-
+        {{ $.Release.Namespace }}
+    - name: DD_PROFILING_ENABLED
+      value: "true"
+    - name: DD_TAGS
+      value: ""
+    - name: DD_TRACE_ANALYTICS_ENABLED
+      value: "true"
+    - name: DD_TRACE_ENABLED
+      value: "true"
+  downwardApi: 
     - name: DD_AGENT_HOST
       fieldPath: status.hostIP
-  configMapRef: {}
+  configMapRef: []
+  secretRef: []
 
 # Probe settings (use Kubernetes syntax)
 probes:

@@ -39,7 +39,7 @@ spec:
           volumeMounts:
             - name: {{ (print .Values.service "-config") | quote }}
               mountPath: {{ .Values.configMap.mountPath | quote }}
-          {{- if or (.Values.env.inline) (.Values.env.downwardApi) (.Values.env.configMapRef) }}
+          {{- if or (.Values.env.inline) (.Values.env.downwardApi) }}
           env:
           {{- range .Values.env.downwardApi }}
             - name: {{ .name }}
@@ -47,6 +47,21 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: {{ .fieldPath }}
+          {{- end -}}
+          {{- range .Values.env.inline }}
+            - name: {{ .name }}
+              value: {{ tpl .value $ }}
+          {{- end -}}
+          {{- end }}
+          {{- if or (.Values.env.configMapRef) (.Values.env.secretRef) }}
+          envFrom:
+          {{- range .Values.env.configMapRef }}
+            - configMapRef:
+                name: {{ .name }}
+          {{- end -}}
+          {{- range .Values.env.secretRef }}
+            - secretRef:
+                name: {{ .name }}
           {{- end -}}
           {{- end }}
       volumes:
