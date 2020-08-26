@@ -40,6 +40,16 @@ spec:
           volumeMounts:
             - name: {{ (print .Values.service "-config") | quote }}
               mountPath: {{ .Values.configMap.mountPath | quote }}
+{{- if or (.Values.env.inline) (.Values.env.downwardApi) (.Values.env.configMapRef) }}
+          env:
+{{- range $name, $fieldPath := .Values.env.downwardApi }}
+            - name: {{ $name }}
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: {{ $fieldPath }}
+{{- end }}
+{{- end -}}
       volumes:
         - name: {{ (print .Values.service "-config") | quote }}
           configMap:

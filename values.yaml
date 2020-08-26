@@ -50,6 +50,13 @@ configMap:
     key1: value1
     key2: value2
 
+env:
+  inline: {}
+  downwardApi:
+    - name: DD_AGENT_HOST
+      fieldPath: status.hostIP
+  configMapRef: {}
+
 # Probe settings (use Kubernetes syntax)
 probes:
   livenessProbe:
