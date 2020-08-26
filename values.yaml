@@ -32,8 +32,8 @@ ports:
 # above. 
 ingressGateway:
   enabled: true
-# name: default/my-gateway
-# host: my.gateway.com
+  name: istio-system/ingress-gateway
+  host: *.{{ .Release.Namespace }}.group1001.cloud
 # matchPrefix: 
 #   - "/foo"
 #   - "/bar"
