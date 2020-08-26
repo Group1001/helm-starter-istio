@@ -31,25 +31,24 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.imagePullPolicy | quote }}
           ports:
-{{- range .Values.ports }}
+          {{- range .Values.ports }}
             - name: {{ .name | quote }}
               containerPort: {{ .targetPort }}
               protocol: TCP
-{{- end }}
-{{- if .Values.probes -}}{{- toYaml .Values.probes | nindent 10 -}}{{- end -}}
+          {{- end }}
           volumeMounts:
             - name: {{ (print .Values.service "-config") | quote }}
               mountPath: {{ .Values.configMap.mountPath | quote }}
-{{- if or (.Values.env.inline) (.Values.env.downwardApi) (.Values.env.configMapRef) }}
+          {{- if or (.Values.env.inline) (.Values.env.downwardApi) (.Values.env.configMapRef) }}
           env:
-{{- range $name, $fieldPath := .Values.env.downwardApi }}
-            - name: {{ $name }}
+          {{- range .Values.env.downwardApi }}
+            - name: {{ .name }}
               valueFrom:
                 fieldRef:
                   apiVersion: v1
-                  fieldPath: {{ $fieldPath }}
-{{- end }}
-{{- end -}}
+                  fieldPath: {{ .fieldPath }}
+          {{- end -}}
+          {{- end }}
       volumes:
         - name: {{ (print .Values.service "-config") | quote }}
           configMap:
