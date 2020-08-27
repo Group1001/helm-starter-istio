@@ -22,16 +22,16 @@ spec:
 {{- if .Values.ingressGateway.enabled }}
     - match:
 {{- range .Values.ingressGateway.matchPrefix }}
-      - uri:
-          prefix: {{ . | quote }}
+        - uri:
+            prefix: {{ . | quote }}
 {{- end }}
       route:
-      - destination:
-          host: {{ (print .Values.service "." .Release.Namespace ".svc.cluster.local") | quote }}
-          subset: {{ (print "v" .Values.version) | quote }}
+        - destination:
+            host: {{ (print .Values.service "." .Release.Namespace ".svc.cluster.local") | quote }}
+            subset: {{ (print "v" .Values.version) | quote }}
 {{- else }}
     - route:
-      - destination:
-          host: {{ (print .Values.service "." .Release.Namespace ".svc.cluster.local") | quote }}
-          subset: {{ (print "v" .Values.version) | quote }}
+        - destination:
+            host: {{ (print .Values.service "." .Release.Namespace ".svc.cluster.local") | quote }}
+            subset: {{ (print "v" .Values.version) | quote }}
 {{- end }}
