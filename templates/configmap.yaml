@@ -26,6 +26,5 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service | quote }}
   namespace: {{ $.Release.Namespace | quote }}
 data:
-  {{ .fileName | default "config.yaml" }}: |-
 {{ toYaml .content | indent 4 }}
 {{- end }}
