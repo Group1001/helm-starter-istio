@@ -72,12 +72,28 @@ env:
 # Probe settings (use Kubernetes syntax)
 probes:
   livenessProbe:
-    initialDelaySeconds: 30
+    failureThreshold: 3
     httpGet:
-      path: /health
-      port: 8080
+      httpHeaders:
+      - name: Accept
+        value: application/json
+      path: /healthz/liveness
+      port: 8081
+      scheme: HTTP
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
   readinessProbe:
-    timeoutSeconds: 10
+    failureThreshold: 3
     httpGet:
-      path: /ready
-      port: 8080
+      httpHeaders:
+      - name: Accept
+        value: application/json
+      path: /healthz/readiness
+      port: 8081
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
