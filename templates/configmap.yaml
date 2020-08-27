@@ -26,5 +26,5 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service | quote }}
   namespace: {{ $.Release.Namespace | quote }}
 data:
-{{ toYaml .content | indent 4 }}
+{{ toYaml .content | indent 2 }}
 {{- end }}
