@@ -23,7 +23,7 @@ replicaCount: 3
 # Ports must be named <protocol>[-<suffix>] to work with Istio.
 # Valid protocols are grpc, http, http2, https, mongo, mysql, redis, tcp, tls, udp
 ports:
-  - name: http-status
+  - name: http2-status
     port: 8080
     targetPort: 8080
 
