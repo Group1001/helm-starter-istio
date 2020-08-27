@@ -23,8 +23,10 @@ spec:
         # Istio required labels
         app: {{ .Values.service | quote }}
         version: {{ .Values.version | quote }}
+      {{- if .Values.configMap.enabled }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Values.service | quote }}
