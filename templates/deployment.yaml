@@ -23,10 +23,13 @@ spec:
         # Istio required labels
         app: {{ .Values.service | quote }}
         version: {{ .Values.version | quote }}
-      {{- if .Values.configMap.enabled }}
       annotations:
+        {{- if .Values.datadog.enabled }}
+        {{ tpl .Values.datadog.annotation $ }}
+        {{- end }}
+        {{- if .Values.configMap.enabled }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      {{- end }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Values.service | quote }}
@@ -55,15 +58,15 @@ spec:
               value: {{ tpl .value $ }}
           {{- end -}}
           {{- end }}
-          {{- if or (.Values.env.configMapRef) (.Values.env.secretRef) }}
+          {{- if or (.Values.env.configMapRef.enabled) (.Values.env.secretRef.enabled) }}
           envFrom:
-          {{- range .Values.env.configMapRef }}
+          {{- if .Values.env.configMapRef.enabled }}
             - configMapRef:
-                name: {{ .name }}
+                name: {{ .Values.service }}-config
           {{- end -}}
-          {{- range .Values.env.secretRef }}
+          {{- if .Values.env.secretRef.enabled }}
             - secretRef:
-                name: {{ .name }}
+                name: {{ .Values.service }}-secret
           {{- end -}}
           {{- end }}
       {{- if .Values.configMap.enabled }}
