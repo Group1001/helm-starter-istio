@@ -41,9 +41,11 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: TCP
           {{- end }}
+          {{- if .Values.configMap.enabled }}
           volumeMounts:
             - name: {{ (print .Values.service "-config") | quote }}
               mountPath: {{ .Values.configMap.mountPath | quote }}
+          {{- if }}
           {{- if or (.Values.env.inline) (.Values.env.downwardApi) }}
           env:
           {{- range .Values.env.downwardApi }}
