@@ -45,7 +45,7 @@ spec:
           volumeMounts:
             - name: {{ (print .Values.service "-config") | quote }}
               mountPath: {{ .Values.configMap.mountPath | quote }}
-          {{- if }}
+          {{- end }}
           {{- if or (.Values.env.inline) (.Values.env.downwardApi) }}
           env:
           {{- range .Values.env.downwardApi }}
