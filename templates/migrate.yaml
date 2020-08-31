@@ -11,19 +11,21 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
     helm.sh/hook-delete-policy: hook-succeeded,hook-failed
-    sidecar.istio.io/inject: "false"
   namespace: {{ .Release.namespace | quote }}
 spec:
   template:
     metadata:
       name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
     spec:
+      metadata:
+        annotations: 
+          sidecar.istio.io/inject: "false"
       restartPolicy: Never
       containers:
       - name: {{ (print .Values.service "-migrate") | quote }}
         image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag }}"
         imagePullPolicy: Always
-        command: ["/flyway/flyway", "-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
+        command: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
         envFrom:
           - configMapRef:
               name: {{ .Values.service }}-config
