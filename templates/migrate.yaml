@@ -11,13 +11,12 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
     helm.sh/hook-delete-policy: hook-succeeded
+    sidecar.istio.io/inject: false
   namespace: {{ .Release.namespace | quote }}
 spec:
   template:
     metadata:
       name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
-    annotations:
-      sidecar.istio.io/inject: false
     spec:
       restartPolicy: Never
       containers:
