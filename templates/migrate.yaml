@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: {{ (print .Values.service "-migrate-v" .Values.version "-") | quote }}
+  name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
   annotations:
     app.kubernetes.io/name: {{ .Values.service | quote }}
     app.kubernetes.io/part-of: {{ .Values.system | quote }}
