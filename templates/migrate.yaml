@@ -1,0 +1,31 @@
+{{- if .Values.migrate.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
+  annotations:
+    app.kubernetes.io/name: {{ .Values.service | quote }}
+    app.kubernetes.io/part-of: {{ .Values.system | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}    
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-weight: "-1"
+    helm.sh/hook-delete-policy: hook-succeeded
+  namespace: {{ .Release.namespace | quote }}
+spec:
+  template:
+    metadata:
+      name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: {{ (print .Values.service "-migrate") | quote }}
+        image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag }}"
+        imagePullPolicy: Always
+        command: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.service }}-config
+          - secretRef:
+              name: {{ .Values.service }}-secret
+{{- end }}

@@ -16,15 +16,19 @@ image:
   tag: YYYY
   imagePullPolicy: IfNotPresent
 
+# Docker settings for db migrations job
+migrate:
+  enabled: false
+  image:
+    repository: AAAA
+    tag: BBBB
+
 # The number of pod replicas to run for your service
 replicaCount: 3
 
 #### CHANGE THIS.  Current services all use unique port numbers
-# Port settings
-# Ports must be named <protocol>[-<suffix>] to work with Istio.
-# Valid protocols are grpc, http, http2, https, mongo, mysql, redis, tcp, tls, udp
 ports:
-  - name: http2-status
+  - name: http
     port: 8080
     targetPort: 8080
 
