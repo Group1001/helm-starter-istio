@@ -27,9 +27,9 @@ spec:
         args: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
         env:
           - name: DB_USERNAME
-            value: {{ .Values.env.configMapRef.values.DB_USERNAME }}
+            value: {{ .Values.env.configMapRef.values.DB_USERNAME | quote }}
           - name: DB_PASSWORD
-            value: {{ .Values.env.secretRef.values.DB_PASSWORD }}
+            value: {{ .Values.env.secretRef.values.DB_PASSWORD | quote }}
           - name: MIGRATE_URL
-            value: {{ .Values.env.configMapRef.values.MIGRATE_URL }}
+            value: {{ .Values.env.configMapRef.values.MIGRATE_URL | quote }}
 {{- end }}
