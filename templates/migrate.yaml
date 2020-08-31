@@ -24,7 +24,7 @@ spec:
       - name: {{ (print .Values.service "-migrate") | quote }}
         image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag }}"
         imagePullPolicy: Always
-        command: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
+        args: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
         envFrom:
           - configMapRef:
               name: {{ .Values.service }}-config
