@@ -7,8 +7,8 @@ metadata:
   annotations:
     app.kubernetes.io/name: {{ .Values.service | quote }}
     app.kubernetes.io/part-of: {{ .Values.system | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}    
-    helm.sh/hook: pre-upgrade
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
     helm.sh/hook-delete-policy: hook-succeeded
   namespace: {{ .Release.namespace | quote }}
