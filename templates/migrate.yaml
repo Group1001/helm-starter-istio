@@ -16,13 +16,15 @@ spec:
   template:
     metadata:
       name: {{ (print .Values.service "-migrate-v" .Values.version) | quote }}
+    annotations:
+      sidecar.istio.io/inject: false
     spec:
       restartPolicy: Never
       containers:
       - name: {{ (print .Values.service "-migrate") | quote }}
         image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag }}"
         imagePullPolicy: Always
-        command: ["-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
+        command: ["/flyway/flyway", "-user=${DB_USERNAME}", "-password=${DB_PASSWORD}", "-url=${MIGRATE_URL}", "migrate"]
         envFrom:
           - configMapRef:
               name: {{ .Values.service }}-config
