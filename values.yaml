@@ -75,6 +75,8 @@ env:
   configMapRef: 
     enabled: false
     values: {}
+  migratorConfigMap:
+    values: {}
   secretRef:
     enabled: false
     values: {}
