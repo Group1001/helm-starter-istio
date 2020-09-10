@@ -83,10 +83,30 @@ env:
 
 datadog:
   enabled: true
-  #### PICK ONE
-  # Aggregate multi-line logs starting with YYYY-MM-DD timestamps
+  #### PICK ONE of the aggregators, below (log_start_with_date, log_start_with_clocktime)
+  #### for some reason the second annotation must be indented by 8 spaces.
   annotation: |-
-    ad.datadoghq.com/{{ $.Values.service }}.logs: |-
+    ad.datadoghq.com/istio-proxy.logs: |-
+              [{
+                "source": "proxyv2",
+                "service": "proxyv2",
+                "log_processing_rules": [{
+                  "type": "multi_line",
+                  "name": "log_start_with_date_and_brackets",
+                  "pattern": "\\[\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])[\\sT](0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.\\d{3}Z?\\]"
+                },
+                {
+                  "type": "exclude_at_match",
+                  "name": "discard_pings",
+                  "pattern": "GET\\s+/(ping|healthz|version|[\\w-]+/version|actuator)"
+                },
+                {
+                  "type": "exclude_at_match",
+                  "name": "discard_libprotobuf",
+                  "pattern": "libprotobuf\\s+INFO"
+                }]
+              }]
+            ad.datadoghq.com/{{ $.Values.service }}.logs: |-
               [{
                 "source": "{{ $.Values.service }}",
                 "service": "{{ $.Values.service }}",
@@ -101,9 +121,7 @@ datadog:
                   "pattern" : "\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])"
                 }]
               }]
-  # Aggregate multi-lin logs starting with HH:MM:SS clock times
-  # annotation: |-
-  #   ad.datadoghq.com/${{ $.Values.service }}.logs: |-
+  #           ad.datadoghq.com/${{ $.Values.service }}.logs: |-
   #             [{
   #               "source": "{{ $.Values.service }}",
   #               "service": "{{ $.Values.service }}",
@@ -114,30 +132,10 @@ datadog:
   #               },
   #               {
   #                 "type": "multi_line",
-  #                 "name": "log_start_with_timestamp",
+  #                 "name": "log_start_with_clocktime",
   #                 "pattern": "(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9].\\d{3}"
   #               }]
   #             }]    
-      ad.datadoghq.com/istio-proxy.logs: |-
-                [{
-                  "source": "proxyv2",
-                  "service": "proxyv2",
-                  "log_processing_rules": [{
-                    "type": "multi_line",
-                    "name": "log_start_with_date_and_brackets",
-                    "pattern": "\\\\[\\\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])[\\\\sT](0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\\\.\\\\d{3}Z?\\\\]"
-                  },
-                  {
-                    "type": "exclude_at_match",
-                    "name": "discard_pings",
-                    "pattern": "GET\\\\s+/(ping|healthz|version|[\\\\w-]+/version|actuator)"
-                  },
-                  {
-                    "type": "exclude_at_match",
-                    "name": "discard_libprotobuf",
-                    "pattern": "libprotobuf\\\\s+INFO"
-                  }]
-                }]
 
 # Probe settings (use Kubernetes syntax)
 probes:
