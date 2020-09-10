@@ -32,21 +32,4 @@ spec:
             value: {{ .Values.env.migratorConfigMapRef.values.DB_PASSWORD | quote }}
           - name: MIGRATE_URL
             value: {{ .Values.env.migratorConfigMapRef.values.MIGRATE_URL | quote }}
-          - name: DD_ENV
-            value: |-
-              {{ $.Release.Namespace }}
-          - name: DD_PROFILING_ENABLED
-            value: "true"
-          - name: DD_TAGS
-            value: |-
-              app:{{ (print .Values.service "-migrate") }},env:{{ $.Release.Namespace }},part-of:{{ .Values.system }}
-          - name: DD_TRACE_ANALYTICS_ENABLED
-            value: "true"
-          - name: DD_TRACE_ENABLED
-            value: "true"
-          - name: DD_AGENT_HOST
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.hostIP
 {{- end }}
