@@ -41,10 +41,9 @@ ingressGateway:
   name: istio-system/ingress-gateway
   host: |-
     *.{{ $.Release.Namespace }}.group1001.cloud
-# matchPrefix: 
-#   - "/foo"
-#   - "/bar"
-
+  matchPrefix: []
+  matchRegex: []
+  
 configMap:
   enabled: false
   # Where the config map should be mounted inside your container's filesystem.
